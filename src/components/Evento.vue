@@ -10,11 +10,11 @@
             <v-spacer></v-spacer>
 
             <v-toolbar-items class="hidden-sm-and-down">
-                <v-btn text to="#inicio">Inicio</v-btn>
-                <v-btn text to="#acerca">Acerca</v-btn>
-                <v-btn text to="#productos">Productos</v-btn>
-                <v-btn text to="#entradas">Entradas</v-btn>
-                <v-btn text to="#contacto">Contacto</v-btn>
+                <v-btn text @click="goToSection('#inicio')">Inicio</v-btn>
+                <v-btn text @click="goToSection('#acerca')">Acerca</v-btn>
+                <v-btn text @click="goToSection('#productos')">Productos</v-btn>
+                <v-btn text @click="goToSection('#entradas')">Entradas</v-btn>
+                <v-btn text @click="goToSection('#contacto')">Contacto</v-btn>
             </v-toolbar-items>
 
             <v-app-bar-nav-icon class="hidden-md-and-up" @click="drawer = !drawer"></v-app-bar-nav-icon>
@@ -24,19 +24,19 @@
         <v-navigation-drawer v-model="drawer" absolute temporary right>
             <v-list nav dense>
                 <v-list-item-group>
-                    <v-list-item to="#inicio">
+                    <v-list-item @click="goToSection('#inicio'); drawer=false">
                         <v-list-item-title>Inicio</v-list-item-title>
                     </v-list-item>
-                    <v-list-item to="#acerca">
+                    <v-list-item @click="goToSection('#acerca'); drawer=false">
                         <v-list-item-title>Acerca</v-list-item-title>
                     </v-list-item>
-                    <v-list-item to="#productos">
+                    <v-list-item @click="goToSection('#productos'); drawer=false">
                         <v-list-item-title>Productos</v-list-item-title>
                     </v-list-item>
-                    <v-list-item to="#entradas">
+                    <v-list-item @click="goToSection('#entradas'); drawer=false">
                         <v-list-item-title>Entradas</v-list-item-title>
                     </v-list-item>
-                    <v-list-item to="#contacto">
+                    <v-list-item @click="goToSection('#contacto'); drawer=false">
                         <v-list-item-title>Contacto</v-list-item-title>
                     </v-list-item>
                 </v-list-item-group>
@@ -45,42 +45,77 @@
 
         <!-- Contenido principal -->
         <v-main>
-            <!-- Sección Hero -->
+            <div class="site-container">
+            <!-- Sección Hero (Carousel integrado) -->
             <section id="inicio" class="hero-section">
-                <v-parallax src="https://cdn.vuetifyjs.com/images/parallax/material2.jpg" height="600">
-                    <v-row align="center" justify="center">
-                        <v-col class="text-center" cols="12">
-                            <h1 class="display-2 font-weight-bold mb-4">Conexión Inteligente</h1>
-                            <h2 class="headline mb-6">Domótica y Hogares del Futuro</h2>
-                            <v-btn large color="accent" class="mt-6" to="#entradas">
-                                Comprar Entradas
-                                <v-icon right>mdi-arrow-right</v-icon>
-                            </v-btn>
-                        </v-col>
-                    </v-row>
-                </v-parallax>
+                <v-carousel height="60vh" cycle hide-delimiter-background>
+                    <v-carousel-item v-for="(slide, i) in heroSlides" :key="i">
+                        <v-img :src="slide.image" gradient="to bottom, rgba(0,0,0,.4), rgba(0,0,0,.6)">
+                            <v-container fill-height>
+                                <v-row align="center" justify="center">
+                                    <v-col cols="12" class="text-center white--text">
+                                        <h1 class="display-2 font-weight-bold mb-4">{{ slide.title }}</h1>
+                                        <h2 class="headline mb-6">{{ slide.subtitle }}</h2>
+                                        <v-btn large-xl color="accent" @click="goToSection(slide.target)">
+                                            {{ slide.buttonText }}
+                                            <v-icon right>mdi-arrow-right</v-icon>
+                                        </v-btn>
+                                    </v-col>
+                                </v-row>
+                            </v-container>
+                        </v-img>
+                    </v-carousel-item>
+                </v-carousel>
             </section>
-
-            <!-- Sección de información -->
+            <!-- Sección de información (Conócenos en tarjetas) -->
             <section id="acerca" class="py-12">
                 <v-container>
-                    <v-row>
+                    <v-row class="mb-8">
                         <v-col cols="12" class="text-center">
-                            <h2 class="display-1 mb-6">Acerca del Evento</h2>
-                            <p class="subtitle-1 mb-8">
-                                Un evento único donde explorarás las últimas tendencias en domótica y automatización del
-                                hogar.
-                                Conoce productos innovadores, asiste a charlas técnicas y establece conexiones valiosas.
-                            </p>
+                            <h2 class="display-1 mb-4">CONÓCENOS</h2>
+                            <p class="subtitle-1 mx-auto" style="max-width:760px">ELECTRICOM INGENIERÍA S.A.S. es una empresa casanareña especializada en ingeniería eléctrica, civil y telecomunicaciones. Contamos con un equipo humano idóneo y capacitado, comprometido en ofrecer soluciones completas y confiables para el sector industrial, comercial y de la construcción.</p>
+                        </v-col>
+                    </v-row>
+
+                    <!-- Brochure preview and actions -->
+                    <v-row class="mb-6" justify="center">
+                        <v-col cols="12" md="8" class="text-center">
+                            <v-img :src="folletoAsset" max-width="720" class="mx-auto mb-4" contain></v-img>
+                            <div>
+                                <v-btn color="primary" class="mr-3" @click="downloadFolleto">Descargar Folleto</v-btn>
+                                <v-btn color="secondary" @click="openFolleto">Ver Folleto</v-btn>
+                            </div>
                         </v-col>
                     </v-row>
 
                     <v-row>
-                        <v-col v-for="(feature, i) in features" :key="i" cols="12" md="4">
-                            <v-card class="pa-6 text-center" height="100%">
-                                <v-icon x-large color="primary" class="mb-4">{{ feature.icon }}</v-icon>
-                                <h3 class="headline mb-3">{{ feature.title }}</h3>
-                                <p>{{ feature.text }}</p>
+                        <v-col cols="12" md="4">
+                            <v-card class="pa-6 text-center about-card" height="100%">
+                                <v-icon x-large color="primary" class="mb-4">mdi-target</v-icon>
+                                <h3 class="headline mb-3">MISIÓN</h3>
+                                <p>Brindar servicios y productos innovadores que integren tecnología, calidad y eficiencia, garantizando el bienestar de nuestros clientes y colaboradores.</p>
+                            </v-card>
+                        </v-col>
+
+                        <v-col cols="12" md="4">
+                            <v-card class="pa-6 text-center about-card" height="100%">
+                                <v-icon x-large color="primary" class="mb-4">mdi-eye</v-icon>
+                                <h3 class="headline mb-3">VISIÓN</h3>
+                                <p>Ser líderes en ingeniería aplicada en la Orinoquia colombiana, con proyección nacional, destacándonos por la innovación, cumplimiento y excelencia.</p>
+                            </v-card>
+                        </v-col>
+
+                        <v-col cols="12" md="4">
+                            <v-card class="pa-6 text-center about-card" height="100%">
+                                <v-icon x-large color="primary" class="mb-4">mdi-cog-outline</v-icon>
+                                <h3 class="headline mb-3">VALORES</h3>
+                                <ul class="text-left" style="display:inline-block; text-align:left;">
+                                    <li>Transparencia</li>
+                                    <li>Responsabilidad</li>
+                                    <li>Respeto</li>
+                                    <li>Compromiso</li>
+                                    <li>Calidad</li>
+                                </ul>
                             </v-card>
                         </v-col>
                     </v-row>
@@ -101,7 +136,7 @@
                     <v-row>
                         <v-col v-for="(product, i) in products" :key="i" cols="12" sm="6" md="4">
                             <v-card class="mx-auto" max-width="350">
-                                <v-img :src="product.image" height="200"></v-img>
+                                <v-img :src="product.image" height="200" contain class="product-img"></v-img>
                                 <v-card-title>{{ product.name }}</v-card-title>
                                 <v-card-text>
                                     <p>{{ product.description }}</p>
@@ -152,7 +187,7 @@
                                     </v-list>
                                 </v-card-text>
                                 <v-card-actions class="justify-center">
-                                    <v-btn color="primary" large>Seleccionar</v-btn>
+                                    <v-btn color="accent" large dark elevation="6" class="buy-btn" @click="openPurchase(ticket)">Comprar</v-btn>
                                 </v-card-actions>
                             </v-card>
                         </v-col>
@@ -191,7 +226,7 @@
                                             <v-icon color="primary">mdi-calendar</v-icon>
                                         </v-list-item-icon>
                                         <v-list-item-content>
-                                            <v-list-item-title>15 de Noviembre, 2025</v-list-item-title>
+                                            <v-list-item-title>30 de Noviembre, 2025</v-list-item-title>
                                         </v-list-item-content>
                                     </v-list-item>
                                     <v-list-item>
@@ -216,17 +251,11 @@
                                 <div class="mt-8">
                                     <h4 class="title mb-3">Síguenos en redes sociales</h4>
                                     <div>
-                                        <v-btn icon large class="mr-2">
+                                        <v-btn icon large class="mr-2" href="https://www.facebook.com/wilson.nossagranados" target="_blank" rel="noopener">
                                             <v-icon color="#3b5998">mdi-facebook</v-icon>
                                         </v-btn>
-                                        <v-btn icon large class="mr-2">
+                                        <v-btn icon large class="mr-2" href="https://x.com/Electricom" target="_blank" rel="noopener">
                                             <v-icon color="#1da1f2">mdi-twitter</v-icon>
-                                        </v-btn>
-                                        <v-btn icon large class="mr-2">
-                                            <v-icon color="#0077b5">mdi-linkedin</v-icon>
-                                        </v-btn>
-                                        <v-btn icon large>
-                                            <v-icon color="#e4405f">mdi-instagram</v-icon>
                                         </v-btn>
                                     </div>
                                 </div>
@@ -235,7 +264,33 @@
                     </v-row>
                 </v-container>
             </section>
+            </div>
         </v-main>
+
+        <!-- Dialog de compra -->
+        <v-dialog v-model="purchaseDialog" max-width="500">
+            <v-card>
+                <v-card-title class="headline">Comprar: {{ selectedTicket.type || '' }}</v-card-title>
+                <v-card-text>
+                    <v-form ref="purchaseForm">
+                        <v-text-field v-model="purchaseForm.name" label="Nombre" required></v-text-field>
+                        <v-text-field v-model="purchaseForm.email" label="Email" required></v-text-field>
+                        <p>Precio: <strong>{{ selectedTicket.price }}</strong></p>
+                    </v-form>
+                </v-card-text>
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn text @click="purchaseDialog = false">Cancelar</v-btn>
+                    <v-btn color="primary" @click="confirmPurchase">Confirmar Compra</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
+
+        <!-- Snackbar de confirmación -->
+        <v-snackbar v-model="snackbar.show" :timeout="3000">
+            {{ snackbar.text }}
+            <v-btn text @click="snackbar.show = false">Cerrar</v-btn>
+        </v-snackbar>
 
         <!-- Pie de página -->
         <v-footer color="primary" dark>
@@ -247,17 +302,11 @@
                         <p>Organizado por ELECTRICOM INGENIERÍA S.A.S</p>
                     </v-col>
                     <v-col cols="12" md="6" class="text-center text-md-right">
-                        <v-btn icon large class="mr-2">
+                        <v-btn icon large class="mr-2" href="https://www.facebook.com/wilson.nossagranados" target="_blank" rel="noopener">
                             <v-icon>mdi-facebook</v-icon>
                         </v-btn>
-                        <v-btn icon large class="mr-2">
+                        <v-btn icon large class="mr-2" href="https://x.com/Electricom" target="_blank" rel="noopener">
                             <v-icon>mdi-twitter</v-icon>
-                        </v-btn>
-                        <v-btn icon large class="mr-2">
-                            <v-icon>mdi-linkedin</v-icon>
-                        </v-btn>
-                        <v-btn icon large>
-                            <v-icon>mdi-instagram</v-icon>
                         </v-btn>
                     </v-col>
                 </v-row>
@@ -271,10 +320,55 @@
 </template>
 
 <script>
+import termostatoImg from '@/assets/termostato.jpeg'
+// import camarasIMG from '@/assets/camaras.jpeg'
+import camaras2IMG from '@/assets/camaras 2.png'
+// import cerraduraIMG from '@/assets/cerradura.jpeg'
+// import folletoIMG from '@/assets/folleto.jpeg'
+// import imterruptoIMG from '@/assets/interruptor.jpeg'
+// import termostatoIMG from '@/assets/termostato.jpeg'
+import entradas from '@/assets/entradas.png'
+import folletoAsset from '@/assets/folleto.jpg'
+import conocenos from '@/assets/conocenos.png'
+
+
 export default {
     name: 'App',
     data: () => ({
         drawer: false,
+        purchaseDialog: false,
+        selectedTicket: {},
+        purchaseForm: {
+            name: '',
+            email: ''
+        },
+        snackbar: {
+            show: false,
+            text: ''
+        },
+        heroSlides: [
+            {
+                title: '',
+                subtitle: 'Descubre los productos innovadores del evento',
+                buttonText: 'Ver Productos',
+                target: '#productos',
+                image: camaras2IMG
+            },
+            {
+                title: '',
+                subtitle: '',
+                buttonText: 'Comprar Entradas',
+                target: '#entradas',
+                image: entradas
+            },
+            {
+                title: '',
+                subtitle: '',
+                buttonText: 'CONOCENOS',
+                target: '#acerca',
+                image: conocenos
+            }
+        ],
         features: [
             {
                 icon: 'mdi-microphone',
@@ -307,7 +401,7 @@ export default {
                 price: '$219.900',
                 rating: 4.7,
                 reviews: 95,
-                image: 'https://cdn.vuetifyjs.com/images/cards/office.jpg'
+                image: termostatoImg
             },
             {
                 name: 'Cámaras de Seguridad',
@@ -322,7 +416,6 @@ export default {
             {
                 type: 'Entrada General',
                 price: '$120.000',
-                recommended: false,
                 features: [
                     'Acceso a todas las charlas técnicas',
                     'Zona de demostraciones',
@@ -355,6 +448,57 @@ export default {
             }
         ]
     })
+    ,
+    methods: {
+        goToSection(selector) {
+            const el = document.querySelector(selector);
+            if (el) el.scrollIntoView({ behavior: 'smooth' });
+        },
+        openPurchase(ticket) {
+            this.selectedTicket = ticket || {};
+            this.purchaseForm = { name: '', email: '' };
+            this.purchaseDialog = true;
+        },
+        openFolleto() {
+            // Open the imported asset in a new tab
+            const w = window.open(folletoAsset, '_blank');
+            if (w) w.focus();
+        },
+        async downloadFolleto() {
+            try {
+                const resp = await fetch(folletoAsset);
+                const blob = await resp.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'folleto.jpg';
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                window.URL.revokeObjectURL(url);
+            } catch (err) {
+                console.error('Error descargando folleto', err);
+                this.snackbar.text = 'No se pudo descargar el folleto.';
+                this.snackbar.show = true;
+            }
+        },
+        confirmPurchase() {
+            if (!this.purchaseForm.name || !this.purchaseForm.email) {
+                this.snackbar.text = 'Por favor complete nombre y email.';
+                this.snackbar.show = true;
+                return;
+            }
+
+            // Simular compra
+            this.purchaseDialog = false;
+            this.snackbar.text = `Compra simulada: ${this.selectedTicket.type} - ${this.selectedTicket.price}`;
+            this.snackbar.show = true;
+
+            // Aquí podríamos resetear el formulario o enviar datos a un API
+            this.purchaseForm = { name: '', email: '' };
+            this.selectedTicket = {};
+        }
+    }
 };
 </script>
 
@@ -382,5 +526,55 @@ export default {
     font-weight: bold;
     transform: rotate(45deg);
     z-index: 1;
+}
+
+.buy-btn {
+    padding-left: 28px !important;
+    padding-right: 28px !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.5px;
+    background-color: #4caf50 !important; /* verde */
+    color: white !important;
+    transition: transform 120ms ease, box-shadow 120ms ease;
+    box-shadow: 0 6px 18px rgba(76,175,80,0.24);
+}
+
+.buy-btn:active,
+.buy-btn.v-btn--active {
+    transform: translateY(2px) scale(0.995);
+    box-shadow: 0 4px 12px rgba(76,175,80,0.18);
+}
+
+.buy-btn:hover {
+    transform: translateY(-2px) scale(1.01);
+}
+
+/* Product image styling to hide transparent backgrounds and center the image */
+.product-img {
+    background: white;
+    padding: 12px;
+    object-fit: contain;
+}
+
+.about-card {
+    border-radius: 8px;
+    box-shadow: 0 6px 18px rgba(16,24,40,0.06);
+}
+
+.about-card h3 {
+    color: #013a63;
+}
+
+</style>
+
+<style scoped>
+.site-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 16px;
+}
+
+.hero-section .v-carousel {
+    max-height: 60vh;
 }
 </style>
